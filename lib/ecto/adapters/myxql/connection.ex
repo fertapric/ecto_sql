@@ -536,6 +536,11 @@ if Code.ensure_loaded?(MyXQL) do
 
     defp expr({:count, _, []}, _sources, _query), do: "count(*)"
 
+    defp expr({:json_extract_path, _, [expr, path]}, sources, query) do
+      path = Enum.map(path, &[".", &1])
+      ["json_extract(", expr(expr, sources, query), ", '$", path, "')"]
+    end
+
     defp expr({fun, _, args}, sources, query) when is_atom(fun) and is_list(args) do
       {modifier, args} =
         case args do

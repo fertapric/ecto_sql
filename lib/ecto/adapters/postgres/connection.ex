@@ -569,8 +569,9 @@ if Code.ensure_loaded?(Postgrex) do
        interval(count, interval, sources, query) | ")::date"]
     end
 
-    defp expr({:json_get, _, [expr, path]}, sources, query) do
+    defp expr({:json_extract_path, _, [expr, path]}, sources, query) do
       path = Enum.map_join(path, ", ", &"'#{&1}'")
+      # path = Enum.map_join(path, ", ", fn _ -> "'$1'" end)
       ["json_extract_path(", expr(expr, sources, query), "::json, ", path, ")"]
     end
 
